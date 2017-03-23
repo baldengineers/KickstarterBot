@@ -59,16 +59,17 @@ no_zero(number)
 	sleep, 100
 	Run, https://lastpass.com/generatepassword.php
 	WinMaximize A
-	while (A_Cursor = "AppStarting")
-			continue
+	;while (A_Cursor = "AppStarting")
+	;		continue
+	;sleep, 1000
+	chromePageWait()
 	sleep, 1000
-	;chromePageWait()
 	;MsgBox, done loading
 	
 	;copy password, x out window, store it in variable
 	Send {Tab}{Tab}{Tab}{Tab}{Tab}{Tab}{Tab}^c
 	sleep, 100
-	Send ^w
+	Send ^+{Tab}
 	sleep, 500
 	pass = %clipboard%
 	;MsgBox, pass is %pass%
@@ -79,7 +80,7 @@ no_zero(number)
 	sleep, 100
 	Send ^c
 	sleep, 100
-	Send ^w
+	Send ^+{Tab}
 	sleep, 500
 	fullname = %clipboard%
 	;MsgBox, name is %fullname%
@@ -100,14 +101,14 @@ no_zero(number)
 
 	if (no_zero(Eval(total_lines)) != 0) {
 		i = % no_zero(Eval(total_lines/4))
-		MsgBox, %total_lines%
 	} else {
 		i = 0
 	}
 	FileAppend, [user%i%]`nname=%fullname%`nemail=%email%`npass=%pass%`n, accounts.txt
 	
-	Send {ctrl down}{Tab}{ctrl up} 
-	Send ^w 						;close the new tab window and now focused on the kickstarter window
+	;Send ^1
+	;Send ^w 						;close the new tab window and now focused on the kickstarter window
+	Send ^+{Tab}
 	sleep, 500
 	;Send {Tab}{Tab}
 	sleep, 100
