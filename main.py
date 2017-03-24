@@ -1,6 +1,7 @@
 # NOTE: must run " pip install -U selenium "
 
 import msvcrt
+import threading
 import time
 import pickle
 from selenium import webdriver
@@ -17,19 +18,19 @@ def new_tab(site):
 def change_focus(window):
     driver.switch_to_window(driver.window_handles[sites_open.index(window)])
 
-def input_timeout(prompt, timeout=5.0):
-    print(prompt)  
-    finishat = time.time() + timeout
-    result = []
+end_program = False
+def check_end():
+    #checks if the program should end or not
     while True:
-        if msvcrt.kbhit():
-            result.append(msvcrt.getche())
-            if result[-1] == '\r':   # or \n, whatever Win returns;-)
-                return ''.join(result)
-            time.sleep(0.1)          # just to yield to other processes/threads
-        else:
-            if time.time() > finishat:
-                return None
+        key = ord(msvcrt.getch())
+        if key == 27:
+            end_program = True
+            break
+            
+#start the thread to check for end of program
+t = threading.Thread(target=check_end)
+t.daemon = True
+t.start()
 
 driver.get('https://www.kickstarter.com/signup?ref=nav')
 new_tab('https://lastpass.com/generatepassword.php')
@@ -116,8 +117,8 @@ while True:
     change_focus('MAIL')
     driver.find_element_by_id('forget_button').click()
     driver.get('https://www.guerrillamail.com/inbox')
-
-    if input_timeout("another? y/n (times out in 5 secs)") == "n":
+        
+    if end_program:
         break
     
 driver.quit()
