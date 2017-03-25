@@ -21,11 +21,14 @@ def change_focus(window):
 end_program = False
 def check_end():
     #checks if the program should end or not
+    global end_program
     while True:
-        key = ord(msvcrt.getch())
-        if key == 27:
-            end_program = True
-            break
+        if msvcrt.kbhit():
+            key = ord(msvcrt.getch())
+            if key == 27:
+                end_program = True
+                print('stopping program on next run-through...')
+                break
             
 #start the thread to check for end of program
 t = threading.Thread(target=check_end)
@@ -35,7 +38,7 @@ t.start()
 driver.get('https://www.kickstarter.com/signup?ref=nav')
 new_tab('https://lastpass.com/generatepassword.php')
 new_tab('http://www.pseudorandom.name/')
-new_tab('https://www.guerrillamail.com/inbox')
+new_tab('https://www.sharklasers.com/inbox')
 
 sites_open = ['KICKSTARTER', 'MAIL', 'RANDOM_NAME', 'RANDOM_PASS']
 # I do not know why I have to open up the new tabs opposite from how the indices are laid out in this list
@@ -74,6 +77,7 @@ while True:
         l = pickle.load(f)
 
     l.append([name, email, password])
+    print('appending: ', [name, email, password])
     print(l)
 
     with open('accounts.dat', 'wb') as f:
@@ -114,20 +118,27 @@ while True:
     driver.find_element_by_link_text('Log out').click()
     driver.get('https://www.kickstarter.com/signup?ref=nav')
 
-    change_focus('MAIL')
-    driver.find_element_by_id('forget_button').click()
-    driver.get('https://www.guerrillamail.com/inbox')
-        
     if end_program:
         break
+    
+    #reset all the tabs
+    change_focus('MAIL')
+    driver.find_element_by_id('forget_button').click()
+    driver.get('https://www.sharklasers.com/inbox')
+
+    change_focus('RANDOM_NAME')
+    driver.get('http://www.pseudorandom.name/')
+
+    change_focus('RANDOM_PASS')
+    driver.get('https://lastpass.com/generatepassword.php')
     
 driver.quit()
 
 # use the below to delete the latest entry 
-with open('accounts.dat', 'rb') as f:
-    l = pickle.load(f)
-
-l.pop(-1)
-
-with open('accounts.dat', 'wb') as f:
-    pickle.dump(l, f)
+##with open('accounts.dat', 'rb') as f:
+##    l = pickle.load(f)
+##
+##l.pop(-1)
+##
+##with open('accounts.dat', 'wb') as f:
+##    pickle.dump(l, f)

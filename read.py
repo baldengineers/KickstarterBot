@@ -8,4 +8,4 @@ def read_accounts():
 if __name__ == '__main__':    
     l = read_accounts()
     for i in l:
-        print("Name: %s\nEmail: %s\nPassword: %s\n\n" % (i[0], i[1], i[2]))
+        print("Name: %s\nEmail: %s\nPassword: %s\n" % (i[0], i[1], i[2]))
