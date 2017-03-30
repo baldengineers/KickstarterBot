@@ -2,6 +2,7 @@ import random
 import pickle
 from sklearn import tree
 from pprint import pprint
+from PIL import Image
 
 ##choices = ["█", " ", "▓", "▒", "░"]
 choices = ["█", " "]
@@ -12,13 +13,16 @@ def clear(p):
         with open(name, 'rb') as f:
             l = pickle.load(f)
 
-        l = l[:-1]
+        l = l[1][:-1]
         
         with open(name, 'wb') as f:
             pickle.dump(l,f)
+
+
+        
     else:
         with open("training.dat", "wb") as f:
-            pickle.dump([],f)
+            pickle.dump([0,[]],f)
 
 def run(width):
     total = []
@@ -61,10 +65,22 @@ def like(t):
     ans = input("te gusta hombre? (y/n)\n")
     if ans == "y":
         #print('appending to yes list:', t)
-        l.append([t, 1]) # tell computer you like the image
+        l[1].append([t, 1]) # tell computer you like the image
+
+        im = Image.new("RGB", (8, 8))
+        pix = im.load()
+        for x in range(8):
+            for y in range(8):
+                if t[y][x] == "█":
+                    pix[x,y] = (0,0,0)
+                else:
+                    pix[x,y] = (255,255,255)
+        im.save("sprites/%d.png" % l[0], "PNG")
     elif ans == "n":
         #print('appending to no list:', t)
-        l.append([t, 0]) # tell computer you do not like the image
+        l[1].append([t, 0]) # tell computer you do not like the image
+        l[0] += 1
+        #print(l)
     else:
         return
 
@@ -85,6 +101,7 @@ def learn(width):
     name = 'training.dat'
     with open(name, 'rb') as f:
         l = pickle.load(f)
+        l = l[1]
     if l == []:
         #pass
         return run(width)
