@@ -5,7 +5,8 @@ from pprint import pprint
 from PIL import Image
 
 ##choices = ["█", " ", "▓", "▒", "░"]
-choices = ["█", " "]
+choices = ["██", "  "]
+WIDTH = 8
 
 def clear(p):
     if p:
@@ -67,19 +68,19 @@ def like(t):
         #print('appending to yes list:', t)
         l[1].append([t, 1]) # tell computer you like the image
 
-        im = Image.new("RGB", (8, 8))
+        im = Image.new("RGB", (WIDTH, WIDTH))
         pix = im.load()
-        for x in range(8):
-            for y in range(8):
-                if t[y][x] == "█":
+        for x in range(WIDTH):
+            for y in range(WIDTH):
+                if t[y][x] == "0": #0 means black
                     pix[x,y] = (0,0,0)
                 else:
                     pix[x,y] = (255,255,255)
         im.save("sprites/%d.png" % l[0], "PNG")
+        l[0] += 1
     elif ans == "n":
         #print('appending to no list:', t)
         l[1].append([t, 0]) # tell computer you do not like the image
-        l[0] += 1
         #print(l)
     else:
         return
@@ -178,7 +179,7 @@ def learn(width):
 #clear(0) #1 if remove last one, 0 if all
 while True:
     #like(run(8))
-    like(learn(8))
+    like(learn(WIDTH))
 
 
     
