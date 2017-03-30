@@ -1,6 +1,7 @@
 import random
 import pickle
 from sklearn import tree
+from PIL import Image
 
 ##choices = ["█", " ", "▓", "▒", "░"]
 choices = ["█", " "]
@@ -11,13 +12,16 @@ def clear(p):
         with open(name, 'rb') as f:
             l = pickle.load(f)
 
-        l = l[:-1]
+        l = l[1][:-1]
         
         with open(name, 'wb') as f:
             pickle.dump(l,f)
+
+
+        
     else:
         with open("training.dat", "wb") as f:
-            pickle.dump([],f)
+            pickle.dump([0,[]],f)
 
 def run(width):
     total = []
@@ -58,11 +62,23 @@ def like(t):
         with open(name, 'rb') as f:
             l = pickle.load(f)
 
-        l.append(t)
+        l[1].append(t)
+        l[0] += 1
         #print(l)
         
         with open(name, 'wb') as f:
             pickle.dump(l,f)
+
+        im = Image.new("RGB", (8, 8))
+        pix = im.load()
+        for x in range(8):
+            for y in range(8):
+                if t[y][x] == "█":
+                    pix[x,y] = (0,0,0)
+                else:
+                    pix[x,y] = (255,255,255)
+        im.save("sprites/%d.png" % l[0], "PNG")
+        
     else:
         like(run(8))
 
@@ -73,6 +89,7 @@ def learn(width):
     name = 'training.dat'
     with open(name, 'rb') as f:
         l = pickle.load(f)
+        l = l[1]
     if l == []:
         return run(width)
 
@@ -140,7 +157,7 @@ def learn(width):
 
     return total
     #print(clf.predict())
-#clear(1) #1 if remove last one, 0 if all
+clear(0)
 while True:      
     like(learn(8))
 
