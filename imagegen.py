@@ -5,6 +5,20 @@ from sklearn import tree
 ##choices = ["█", " ", "▓", "▒", "░"]
 choices = ["█", " "]
 
+def clear(p):
+    if p:
+        name = 'training.dat'
+        with open(name, 'rb') as f:
+            l = pickle.load(f)
+
+        l = l[:-1]
+        
+        with open(name, 'wb') as f:
+            pickle.dump(l,f)
+    else:
+        with open("training.dat", "wb") as f:
+            pickle.dump([],f)
+
 def run(width):
     total = []
     for i in range(width):
@@ -45,10 +59,12 @@ def like(t):
             l = pickle.load(f)
 
         l.append(t)
-        print(l)
+        #print(l)
         
         with open(name, 'wb') as f:
             pickle.dump(l,f)
+    else:
+        like(run(8))
 
 def find_adjacent(l):
     pass
@@ -57,6 +73,8 @@ def learn(width):
     name = 'training.dat'
     with open(name, 'rb') as f:
         l = pickle.load(f)
+    if l == []:
+        return run(width)
 
     features = []
     labels = []
@@ -119,11 +137,12 @@ def learn(width):
         for sl in l:
             strng += sl
         print(strng)
-    
-    #print(clf.predict())
-    
-##while True:      
-##    like(run(8))
 
-learn(8)
+    return total
+    #print(clf.predict())
+#clear(1) #1 if remove last one, 0 if all
+while True:      
+    like(learn(8))
+
+
     
