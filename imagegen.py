@@ -70,7 +70,8 @@ def learn(width):
                 left    =   choices.index(sprite[i][j-1]) if j != 0 else -1
                 right   =   choices.index(sprite[i][j+1]) if j != width - 1 else -1
 
-                features.append([up, down, left, right, i, j])
+##                features.append([up, down, left, right, i, j])
+                features.append([up, left, i, j]) #only up and left because down and right haven't been generated yet
                 labels.append(choices.index(s))
                 #print(up, down, left, right)
 
@@ -84,8 +85,8 @@ def learn(width):
             total[i].append("")
 
     #random indices to create a fixed char (in order to randomize results)
-##    fixed_i, fixed_j = random.randint(0, width-1), random.randint(0, width-1)
-##    total[fixed_i][fixed_j] = choices[random.randint(0, len(choices)-1)]
+    fixed_i, fixed_j = random.randint(0, width-1), random.randint(0, width-1)
+    total[fixed_i][fixed_j] = choices[random.randint(0, len(choices)-1)]
 
 ##    if width % 2 != 0:
 ##        for i in range(width):
@@ -102,14 +103,15 @@ def learn(width):
 ##        else:
     for i in range(width):
         for j in range(width):
-##            if i == fixed_i and j == fixed_j:
-##                continue
-            up      =   choices.index(sprite[i-1][j]) if i != 0 else -1 #the item above the current
-            down    =   choices.index(sprite[i+1][j]) if i != width - 1 else -1
-            left    =   choices.index(sprite[i][j-1]) if j != 0 else -1
-            right   =   choices.index(sprite[i][j+1]) if j != width - 1 else -1
+            if i == fixed_i and j == fixed_j:
+                continue
+            up      =   choices.index(total[i-1][j]) if i != 0 else -1 #the item above the current
+            #down    =   choices.index(total[i+1][j]) if i != width - 1 else -1
+            left    =   choices.index(total[i][j-1]) if j != 0 else -1
+            #right   =   choices.index(total[i][j+1]) if j != width - 1 else -1
             
-            x = clf.predict([[up, down, left, right, i, j]])[0]
+##            x = clf.predict([[up, down, left, right, i, j]])[0]
+            x = clf.predict([[up, left, i, j]])[0]
             total[i][j] = choices[x]        
         
     for l in total:
